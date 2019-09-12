@@ -178,7 +178,22 @@ define network::bond(
     hotplug          => $hotplug,
     mtu              => $mtu,
     options          => $options,
-    slave_options    => $slave_options,
+    # Make sure that we turn booleans into 'yes'/'no'
+    slave_options    => $slave_options.then |$_s| {
+      $_s.reduce({}) |$acc, $kv| {
+          [$k, $v] = $kv
+          $acc + {
+            $k => $v ? {
+              Boolean => if $v {
+                'yes'
+              } else {
+                'no'
+              },
+              default => $v,
+            }
+          }
+      }
+    },
 
     mode             => $mode,
     miimon           => $miimon,
