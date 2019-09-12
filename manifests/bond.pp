@@ -167,57 +167,40 @@ define network::bond(
     source => 'bonding',
   }
 
+  $_bond_config = {
+    ensure           => $ensure,
+    slaves           => $slaves,
+    ipaddress        => $ipaddress,
+    netmask          => $netmask,
+    family           => $family,
+    method           => $method,
+    onboot           => $onboot,
+    hotplug          => $hotplug,
+    mtu              => $mtu,
+    options          => $options,
+    slave_options    => $slave_options,
+
+    mode             => $mode,
+    miimon           => $miimon,
+    downdelay        => $downdelay,
+    updelay          => $updelay,
+    lacp_rate        => $lacp_rate,
+    primary          => $primary,
+    primary_reselect => $primary_reselect,
+    xmit_hash_policy => $xmit_hash_policy,
+
+    require          => Kmod::Alias[$name],
+  }
+
   case $facts['osfamily'] {
     'Debian': {
       network::bond::debian { $name:
-        ensure           => $ensure,
-        slaves           => $slaves,
-        ipaddress        => $ipaddress,
-        netmask          => $netmask,
-        method           => $method,
-        family           => $family,
-        onboot           => $onboot,
-        hotplug          => $hotplug,
-        mtu              => $mtu,
-        options          => $options,
-        slave_options    => $slave_options,
-
-        mode             => $mode,
-        miimon           => $miimon,
-        downdelay        => $downdelay,
-        updelay          => $updelay,
-        lacp_rate        => $lacp_rate,
-        primary          => $primary,
-        primary_reselect => $primary_reselect,
-        xmit_hash_policy => $xmit_hash_policy,
-
-        require          => Kmod::Alias[$name],
+        * => $_bond_config,
       }
     }
     'RedHat': {
       network::bond::redhat { $name:
-        ensure           => $ensure,
-        slaves           => $slaves,
-        ipaddress        => $ipaddress,
-        netmask          => $netmask,
-        family           => $family,
-        method           => $method,
-        onboot           => $onboot,
-        hotplug          => $hotplug,
-        mtu              => $mtu,
-        options          => $options,
-        slave_options    => $slave_options,
-
-        mode             => $mode,
-        miimon           => $miimon,
-        downdelay        => $downdelay,
-        updelay          => $updelay,
-        lacp_rate        => $lacp_rate,
-        primary          => $primary,
-        primary_reselect => $primary_reselect,
-        xmit_hash_policy => $xmit_hash_policy,
-
-        require          => Kmod::Alias[$name],
+        * => $_bond_config,
       }
     }
     default: {
